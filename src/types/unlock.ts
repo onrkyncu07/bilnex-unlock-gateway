@@ -13,4 +13,5 @@ export interface UnlockAccountRequest {
 export interface UnlockApiResponse {
   success: boolean
   alreadyUnlocked: boolean
+  linkAlreadyUsed: boolean
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { unlockAccount } from '../api/unlockAccount'
 import { StatusCard } from '../components/StatusCard'
 import type { UnlockResult, UnlockStatus } from '../types/unlock'
@@ -35,8 +35,12 @@ function resultToStatus(type: UnlockResult['type']): UnlockStatus {
 export function UnlockAccountPage() {
   const [status, setStatus] = useState<UnlockStatus>('idle')
   const [message, setMessage] = useState('')
+  const started = useRef(false)
 
   useEffect(() => {
+    if (started.current) return
+    started.current = true
+
     const token = new URLSearchParams(window.location.search).get('token')
     if (!token) {
       setStatus('error')
