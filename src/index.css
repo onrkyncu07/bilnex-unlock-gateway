@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bilnex-50: #eff6ff;
+  --color-bilnex-100: #dbeafe;
+  --color-bilnex-500: #3b82f6;
+  --color-bilnex-600: #2563eb;
+  --color-bilnex-700: #1d4ed8;
+  --color-bilnex-900: #1e3a5f;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
