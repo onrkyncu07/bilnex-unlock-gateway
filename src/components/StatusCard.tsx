@@ -7,6 +7,7 @@ const BILNEX_LOGO =
 interface StatusCardProps {
   status: UnlockStatus
   message: string
+  redirectCountdown?: number | null
   onLogin?: () => void
   onRetry?: () => void
 }
@@ -14,6 +15,7 @@ interface StatusCardProps {
 export function StatusCard({
   status,
   message,
+  redirectCountdown,
   onLogin,
   onRetry,
 }: StatusCardProps) {
@@ -110,6 +112,15 @@ export function StatusCard({
             ? 'Hesabınızın engeli kaldırılıyor...'
             : message}
         </p>
+
+        {redirectCountdown != null && redirectCountdown > 0 && (
+          <p
+            className="text-sm font-medium text-bilnex-700"
+            aria-live="polite"
+          >
+            {redirectCountdown} sn sonra giriş sayfasına yönlendirileceksiniz...
+          </p>
+        )}
       </div>
 
       {(isSuccess || isInfo) && onLogin && (

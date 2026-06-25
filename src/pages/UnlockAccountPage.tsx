@@ -12,13 +12,16 @@ const RESULT_MESSAGES: Record<
   Exclude<UnlockResult['type'], 'error'>,
   string
 > = {
-  unlocked:
-    'Hesabınızın engeli başarıyla kaldırıldı. Giriş sayfasına yönlendiriliyorsunuz...',
-  already_unlocked:
-    'Hesabınız zaten açıktır. Giriş sayfasına yönlendiriliyorsunuz...',
+  unlocked: 'Hesabınızın engeli başarıyla kaldırıldı.',
+  already_unlocked: 'Hesabınız zaten açıktır.',
   already_processed:
     'Bu işlem daha önce gerçekleştirilmiştir. Giriş yapabilirsiniz.',
 }
+
+const REDIRECT_SECONDS = Math.max(
+  1,
+  Math.ceil(REDIRECT_DELAY_MS / 1000),
+)
 
 function resultToStatus(type: UnlockResult['type']): UnlockStatus {
   switch (type) {
@@ -35,7 +38,22 @@ function resultToStatus(type: UnlockResult['type']): UnlockStatus {
 export function UnlockAccountPage() {
   const [status, setStatus] = useState<UnlockStatus>('idle')
   const [message, setMessage] = useState('')
+  const [redirectCountdown, setRedirectCountdown] = useState<number | null>(
+    null,
+  )
   const started = useRef(false)
+
+  useEffect(() => {
+    if (redirectCountdown === null) return
+    if (redirectCountdown <= 0) {
+      window.location.href = LOGIN_URL
+      return
+    }
+    const timer = setTimeout(() => {
+      setRedirectCountdown(redirectCountdown - 1)
+    }, 1000)
+    return () => clearTimeout(timer)
+  }, [redirectCountdown])
 
   useEffect(() => {
     if (started.current) return
@@ -60,9 +78,7 @@ export function UnlockAccountPage() {
 
       setStatus(resultToStatus(result.type))
       setMessage(RESULT_MESSAGES[result.type])
-      setTimeout(() => {
-        window.location.href = LOGIN_URL
-      }, REDIRECT_DELAY_MS)
+      setRedirectCountdown(REDIRECT_SECONDS)
     }
 
     void run()
@@ -83,6 +99,7 @@ export function UnlockAccountPage() {
       <StatusCard
         status={status === 'idle' ? 'loading' : status}
         message={message}
+        redirectCountdown={redirectCountdown}
         onLogin={showLogin ? handleLogin : undefined}
         onRetry={status === 'error' ? handleRetry : undefined}
       />
