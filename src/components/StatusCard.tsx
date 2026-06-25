@@ -19,6 +19,7 @@ export function StatusCard({
 }: StatusCardProps) {
   const isLoading = status === 'loading'
   const isSuccess = status === 'success'
+  const isInfo = status === 'info'
   const isError = status === 'error'
 
   return (
@@ -55,6 +56,27 @@ export function StatusCard({
           </div>
         )}
 
+        {isInfo && (
+          <div
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-bilnex-50 text-bilnex-600"
+            aria-hidden
+          >
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
+              />
+            </svg>
+          </div>
+        )}
+
         {isError && (
           <div
             className="flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-600"
@@ -79,6 +101,7 @@ export function StatusCard({
         <h1 className="text-lg font-semibold text-bilnex-900">
           {isLoading && 'Hesap Engel Kaldırma'}
           {isSuccess && 'İşlem Başarılı'}
+          {isInfo && 'Bilgi'}
           {isError && 'İşlem Başarısız'}
         </h1>
 
@@ -89,7 +112,7 @@ export function StatusCard({
         </p>
       </div>
 
-      {isSuccess && onLogin && (
+      {(isSuccess || isInfo) && onLogin && (
         <button
           type="button"
           onClick={onLogin}
